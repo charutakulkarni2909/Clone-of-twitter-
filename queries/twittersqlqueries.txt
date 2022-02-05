@@ -1,0 +1,70 @@
+
+
+### List of queries used for project. ###
+
+
+
+--confirm_password.php
+Use : To check user with username already exist in database table or not
+"SELECT * FROM `registration` WHERE `email` = '$email' OR `username`='$usrname'";
+
+--confirm_password.php
+Use : Insert user with unique username to database table
+$sql_1 = "INSERT INTO `registration`(`first_name`, `last_name`, `username`, `email`, `location`, `gender`, `date_of_birth`, `password`) 
+VALUES ('$fname','$lname','$usrname','$email','$location','$gender','$bday','$pass')";
+
+****************************************************************************************************************************
+
+--login.php
+Use : Check user with email (entered in login field) exist in database or not
+$sql = "SELECT * FROM `registration` WHERE `email` = '$email'";
+
+
+*****************************************************************************************************************************
+--search_bar/index.php
+Use : Find rows that matches the search value in search bar
+"SELECT * FROM `registration` WHERE `username` LIKE '%$str%' OR `first_name` LIKE '%$str%'' OR `last_name` LIKE '%$str%'";
+
+-- search/index.php  
+Use : Decides whether to add Follow button or Unfollow button . If query return row add Unfollow button else add Follow button
+"SELECT `follower_id`, `sender_id`, `receiver_id` FROM `follower` WHERE `sender_id`= '$my_id' AND `receiver_id`= '$user_id'";
+
+********************************************************************************************************************************
+--follow1.php
+Use : To check whether users already follows that users or not
+"SELECT `follower_id`, `sender_id`, `receiver_id` FROM `follower` WHERE `sender_id`= '$my_id' AND `receiver_id`= '$follow_userid'";
+
+--follow1.php
+Use : Add new follower to follower table on clicking Follow button
+"INSERT INTO `follower`(`sender_id`, `receiver_id`) VALUES ('$my_id','$follow_userid')";
+
+--follow1.php
+Use : Increament count of number_of_followers in registration table after new  follower.
+UPDATE `registration`SET `number_of_followers` =`number_of_followers` + 1 WHERE `user_id`='$follow_userid'";
+
+***********************************************************************************************************************************
+
+--unfollow.php
+Use : To check whether user is in follower table or not (checks follow relationship between myid and unfollow_userid)
+"SELECT `follower_id`,`sender_id`, `receiver_id` FROM `follower` WHERE `sender_id`='$my_id' AND `receiver_id`='$unfollow_userid'";
+
+--unfollow.php
+Use : delete the user from follower table on clicking Unfollow button
+"DELETE FROM `follower` WHERE `sender_id`='$my_id' AND `receiver_id`='$unfollow_userid' ";
+
+--unfollow.php
+Use : decreament count of number_of_followers in registration table after  unfollow.
+"UPDATE `registration` SET `number_of_followers` = `number_of_followers` - 1 WHERE `user_id`='$unfollow_userid' ";
+
+
+***********************************************************************************************************************************
+
+--displayTweets.php
+Use : Display own tweets 
+"SELECT * FROM `compose` WHERE `user_id` = '$sender_id_me' order by `post_date_time` DESC";
+
+***********************************************************************************************************************************
+
+--timeline.php
+Use : Display tweets of followers of logined in users
+"SELECT * FROM `compose`, `registration` WHERE compose.`user_id` = registration.`user_id` AND compose.`user_id` IN (SELECT `receiver_id`FROM `follower` WHERE `sender_id` = '$sender_id_me')  ORDER BY `post_date_time` DESC"; 
